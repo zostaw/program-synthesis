@@ -1,2 +1,3 @@
-# program_synthesis
-My kaggle notebook to understand Program Synthesis.
+# Program Synthesis
+
+My learning playground for Program Synthesis.
