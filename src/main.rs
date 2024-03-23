@@ -5,13 +5,13 @@ const MAX_SEARCH_DEPTH: usize = 6;
 
 #[derive(Debug, Default, EnumIter)]
 enum Expr {
-    Input,
+    Input, // Terminal
     #[default]
-    Zero,
-    Inc(Box<Expr>),            // +1
-    Half(Box<Expr>),           // Multiplication expression
-    Add(Box<Expr>, Box<Expr>), // Addition expression
-    Mul(Box<Expr>, Box<Expr>), // Multiplication expression
+    Zero, // Terminal
+    Inc(Box<Expr>), // +1
+    Half(Box<Expr>), // Divide by two
+    Add(Box<Expr>, Box<Expr>), // Addition
+    Mul(Box<Expr>, Box<Expr>), // Multiplication
 }
 
 // Implement Clone instead of Copy for Expr
@@ -22,8 +22,8 @@ impl Clone for Expr {
             Expr::Zero => Expr::Zero,
             Expr::Inc(n) => Expr::Inc(n.clone()),
             Expr::Half(n) => Expr::Half(n.clone()),
-            Expr::Add(lhs, rhs) => Expr::Add(lhs.clone(), rhs.clone()), // Clone the boxed expressions
-            Expr::Mul(lhs, rhs) => Expr::Mul(lhs.clone(), rhs.clone()), // Clone the boxed expressions
+            Expr::Add(lhs, rhs) => Expr::Add(lhs.clone(), rhs.clone()),
+            Expr::Mul(lhs, rhs) => Expr::Mul(lhs.clone(), rhs.clone()),
         }
     }
 }
@@ -40,9 +40,9 @@ fn eval_ast(expr: &Expr, input: f64) -> f64 {
     }
 }
 
+// Generate next generation of expressions
 fn grow(plist: Vec<Expr>) -> Vec<Expr> {
     let mut new_plist = plist.clone();
-
     let mut product = Vec::new();
     for item1 in plist.clone() {
         for item2 in plist.clone() {
@@ -63,11 +63,10 @@ fn grow(plist: Vec<Expr>) -> Vec<Expr> {
     return new_plist;
 }
 
+// Remove expression equivalents for efficiency
 fn elim_equvalents(plist: Vec<Expr>, inputs: &Vec<f64>) -> Vec<Expr> {
     let mut new_plist: Vec<Expr> = Vec::new();
-
     let mut outputs_outcomes: Vec<Vec<f64>> = Vec::new();
-
     for p in plist.clone() {
         let res = inputs.iter().map(|inp| eval_ast(&p, *inp)).collect();
         if !outputs_outcomes.contains(&res) {
@@ -86,28 +85,28 @@ fn synthesize(inputs: Vec<f64>, outputs: Vec<f64>) -> Expr {
     let input = inputs[0].clone();
     let output = outputs[0].clone();
 
-    // list of possible expressions
+    // List of terminals - basically expressions that have values
+    // they do not contain expressions themselves
     let mut plist: Vec<Expr> = vec![Expr::Input, Expr::Zero];
-
+    // Iterate until program is synthesized
     for _ in 0..MAX_SEARCH_DEPTH {
         plist = grow(plist);
         plist = elim_equvalents(plist, &inputs);
         for p in plist.iter() {
+            // Evaluate for single input
             let eval_res = eval_ast(&p, input);
             if eval_res == output {
-                // println!("  Found promissing program...");
+                // Promissing program, try for the entire dataset
                 let res = inputs
                     .iter()
                     .zip(outputs.clone().into_iter())
                     .find_map(|(inp, out)| match eval_ast(&p, *inp) == out {
                         true => {
-                            // println!("    Matching {} -> {}", inp, out);
                             return None;
-                        } // so good so far
+                        } // So far so good
                         false => {
-                            // println!("    Failed on {} -> {}", inp, eval_ast(&p, inp));
                             return Some(1);
-                        } // required single fail to disregard the program
+                        } // Single fail is enough to disregard the program
                     });
                 match res {
                     Some(_) => continue,
@@ -128,42 +127,36 @@ fn synthesize(inputs: Vec<f64>, outputs: Vec<f64>) -> Expr {
 }
 
 fn main() {
-    // First example - same
     println!("\nSynthesize f(X)=X function");
     let inputs: Vec<f64> = vec![1.0, 2.0, 3.0];
     let outputs: Vec<f64> = vec![1.0, 2.0, 3.0];
     let program = synthesize(inputs, outputs);
     println!("      Test program(10.0) = {}", eval_ast(&program, 10.0));
 
-    // Example -> zero
     println!("\nSynthesize f(X)=0 function");
     let inputs: Vec<f64> = vec![1.0, 2.0, 8.0];
     let outputs: Vec<f64> = vec![0.0, 0.0, 0.0];
     let program = synthesize(inputs, outputs);
     println!("      Test program(10.0) = {}", eval_ast(&program, 10.0));
 
-    // Example -> increment
     println!("\nSynthesize f(X)=X+1 function");
     let inputs: Vec<f64> = vec![1.0, 2.0, 15.0];
     let outputs: Vec<f64> = vec![2.0, 3.0, 16.0];
     let program = synthesize(inputs, outputs);
     println!("      Test program(10.0) = {}", eval_ast(&program, 10.0));
 
-    // Example -> x*7 + 1
     println!("\nSynthesize f(X)=7*X+1 function");
     let inputs: Vec<f64> = vec![1.0, 2.0, 0.5];
     let outputs: Vec<f64> = vec![8.0, 15.0, 4.5];
     let program = synthesize(inputs, outputs);
     println!("      Test program(10.0) = {}", eval_ast(&program, 10.0));
 
-    // Example -> (x)/2 + 1
     println!("\nSynthesize f(X)=0.5*X+1 function");
     let inputs: Vec<f64> = vec![2.0, 4.0, 8.0];
     let outputs: Vec<f64> = vec![2.0, 3.0, 5.0];
     let program = synthesize(inputs, outputs);
     println!("      Test program(10.0) = {}", eval_ast(&program, 10.0));
 
-    // Example -> x**3
     println!("\nSynthesize f(X)=X**3 function");
     let inputs: Vec<f64> = vec![2.0, 4.0, 5.0];
     let outputs: Vec<f64> = vec![8.0, 64.0, 125.0];
