@@ -112,7 +112,7 @@ fn synthesize(inputs: Vec<f64>, outputs: Vec<f64>) -> Expr {
                 match res {
                     Some(_) => continue,
                     None => {
-                        println!("      Program accespted:\n        AST: {:?}", p);
+                        println!("      Program: {:?}", p);
                         return p.to_owned();
                     }
                 }
@@ -129,89 +129,44 @@ fn synthesize(inputs: Vec<f64>, outputs: Vec<f64>) -> Expr {
 
 fn main() {
     // First example - same
-    println!("\nSynthesize Y=X function");
-    let inputs: Vec<f64> = vec![1.0, 2.0, 8.0];
-    let outputs: Vec<f64> = vec![1.0, 2.0, 8.0];
+    println!("\nSynthesize f(X)=X function");
+    let inputs: Vec<f64> = vec![1.0, 2.0, 3.0];
+    let outputs: Vec<f64> = vec![1.0, 2.0, 3.0];
     let program = synthesize(inputs, outputs);
-    println!(
-        "      Test for program(10.0) = {}",
-        eval_ast(&program, 10.0)
-    );
+    println!("      Test program(10.0) = {}", eval_ast(&program, 10.0));
 
     // Example -> zero
-    println!("\nSynthesize Y=0 function");
+    println!("\nSynthesize f(X)=0 function");
     let inputs: Vec<f64> = vec![1.0, 2.0, 8.0];
     let outputs: Vec<f64> = vec![0.0, 0.0, 0.0];
     let program = synthesize(inputs, outputs);
-    println!(
-        "      Test for program(10.0) = {}",
-        eval_ast(&program, 10.0)
-    );
+    println!("      Test program(10.0) = {}", eval_ast(&program, 10.0));
 
-    // // Example -> increment
-    // println!("\nSynthesize Y=X+1 function");
-    // let inputs: Vec<f64> = vec![1.0, 2.0, 15.0];
-    // let outputs: Vec<f64> = vec![2.0, 3.0, 16.0];
-    // let program = synthesize(inputs, outputs);
-    // println!(
-    //     "      Test for program(10.0) = {}",
-    //     eval_ast(&program, 10.0)
-    // );
-
-    // // Example -> double
-    // println!("\nSynthesize Y=2*X function");
-    // let inputs: Vec<f64> = vec![1.0, 2.0, 17.0];
-    // let outputs: Vec<f64> = vec![2.0, 4.0, 34.0];
-    // let program = synthesize(inputs, outputs);
-    // println!(
-    //     "      Test for program(10.0) = {}",
-    //     eval_ast(&program, 10.0)
-    // );
-
-    // // Example -> x*7 + 1
-    // println!("\nSynthesize Y=7*X+1 function");
-    // let inputs: Vec<f64> = vec![1.0, 2.0, 0.5];
-    // let outputs: Vec<f64> = vec![8.0, 15.0, 4.5];
-    // let program = synthesize(inputs, outputs);
-    // println!(
-    //     "      Test for program(10.0) = {}",
-    //     eval_ast(&program, 10.0)
-    // );
-
-    // // Example -> (x+1)*7
-    // println!("\nSynthesize Y=7*(X+1) function");
-    // let inputs: Vec<f64> = vec![1.0, 2.0, 5.0];
-    // let outputs: Vec<f64> = vec![14.0, 21.0, 42.0];
-    // let program = synthesize(inputs, outputs);
-    // println!(
-    //     "      Test for program(10.0) = {}",
-    //     eval_ast(&program, 10.0)
-    // );
-
-    // Example -> (x)/2
-    println!("\nSynthesize Y=0.5*X function");
-    let inputs: Vec<f64> = vec![2.0, 4.0, 8.0];
-    let outputs: Vec<f64> = vec![1.0, 2.0, 4.0];
+    // Example -> increment
+    println!("\nSynthesize f(X)=X+1 function");
+    let inputs: Vec<f64> = vec![1.0, 2.0, 15.0];
+    let outputs: Vec<f64> = vec![2.0, 3.0, 16.0];
     let program = synthesize(inputs, outputs);
-    println!(
-        "      Test for program(10.0) = {}",
-        eval_ast(&program, 10.0)
-    );
+    println!("      Test program(10.0) = {}", eval_ast(&program, 10.0));
+
+    // Example -> x*7 + 1
+    println!("\nSynthesize f(X)=7*X+1 function");
+    let inputs: Vec<f64> = vec![1.0, 2.0, 0.5];
+    let outputs: Vec<f64> = vec![8.0, 15.0, 4.5];
+    let program = synthesize(inputs, outputs);
+    println!("      Test program(10.0) = {}", eval_ast(&program, 10.0));
 
     // Example -> (x)/2 + 1
-    println!("\nSynthesize Y=0.5*X+1 function");
+    println!("\nSynthesize f(X)=0.5*X+1 function");
     let inputs: Vec<f64> = vec![2.0, 4.0, 8.0];
     let outputs: Vec<f64> = vec![2.0, 3.0, 5.0];
     let program = synthesize(inputs, outputs);
-    println!(
-        "      Test for program(10.0) = {}",
-        eval_ast(&program, 10.0)
-    );
+    println!("      Test program(10.0) = {}", eval_ast(&program, 10.0));
 
-    // Example -> 2*((x)/2 + 1)
-    println!("\nSynthesize Y=X**3 function");
+    // Example -> x**3
+    println!("\nSynthesize f(X)=X**3 function");
     let inputs: Vec<f64> = vec![2.0, 4.0, 5.0];
     let outputs: Vec<f64> = vec![8.0, 64.0, 125.0];
     let program = synthesize(inputs, outputs);
-    println!("      Test for program(3.0) = {}", eval_ast(&program, 3.0));
+    println!("      Test program(3.0) = {}", eval_ast(&program, 3.0));
 }
