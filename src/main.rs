@@ -80,7 +80,7 @@ fn elim_equvalents(plist: Vec<Expr>, inputs: &Vec<f64>) -> Vec<Expr> {
     return new_plist;
 }
 
-fn synthesize(inputs: &Vec<f64>, outputs: &Vec<f64>) -> Expr {
+fn synthesize(inputs: Vec<f64>, outputs: Vec<f64>) -> Expr {
     println!("Inputs -> Outputs: {:?} -> {:?}", &inputs, &outputs);
     let input = inputs[0].clone();
     let output = outputs[0].clone();
@@ -126,82 +126,40 @@ fn synthesize(inputs: &Vec<f64>, outputs: &Vec<f64>) -> Expr {
     return Expr::Zero;
 }
 
-struct Test {
-    title: String,
-    inputs: Vec<f64>,
-    outputs: Vec<f64>,
-    test_inputs: Vec<f64>,
-}
-
-impl Test {
-    fn new(title: String, inputs: Vec<f64>, outputs: Vec<f64>, test_inputs: Vec<f64>) -> Self {
-        Self {
-            title,
-            inputs,
-            outputs,
-            test_inputs,
-        }
-    }
-
-    fn eval(&self) {
-        println!("{}", self.title);
-        let program = synthesize(&self.inputs, &self.outputs);
-        println!(
-            "      Test program({:?}) = {:?}\n",
-            self.test_inputs,
-            self.test_inputs
-                .iter()
-                .map(|inp| eval_ast(&program, *inp))
-                .collect::<Vec<f64>>()
-        );
-    }
-}
 fn main() {
-    let mut tests: Vec<Test> = Vec::new();
+    println!("\nSynthesize f(X)=X function");
+    let inputs: Vec<f64> = vec![1.0, 2.0, 3.0];
+    let outputs: Vec<f64> = vec![1.0, 2.0, 3.0];
+    let program = synthesize(inputs, outputs);
+    println!("      Test program(10.0) = {}", eval_ast(&program, 10.0));
 
-    tests.push(Test::new(
-        String::from("Synthesize f(X)=X function"),
-        vec![1.0, 2.0, 3.0],
-        vec![1.0, 2.0, 3.0],
-        vec![10.0],
-    ));
+    println!("\nSynthesize f(X)=0 function");
+    let inputs: Vec<f64> = vec![1.0, 2.0, 8.0];
+    let outputs: Vec<f64> = vec![0.0, 0.0, 0.0];
+    let program = synthesize(inputs, outputs);
+    println!("      Test program(10.0) = {}", eval_ast(&program, 10.0));
 
-    tests.push(Test::new(
-        String::from("Synthesize f(X)=0 function"),
-        vec![1.0, 2.0, 8.0],
-        vec![0.0, 0.0, 0.0],
-        vec![10.0],
-    ));
+    println!("\nSynthesize f(X)=X+1 function");
+    let inputs: Vec<f64> = vec![1.0, 2.0, 15.0];
+    let outputs: Vec<f64> = vec![2.0, 3.0, 16.0];
+    let program = synthesize(inputs, outputs);
+    println!("      Test program(10.0) = {}", eval_ast(&program, 10.0));
 
-    tests.push(Test::new(
-        String::from("Synthesize f(X)=X+1 function"),
-        vec![1.0, 2.0, 15.0],
-        vec![2.0, 3.0, 16.0],
-        vec![10.0],
-    ));
+    println!("\nSynthesize f(X)=7*X+1 function");
+    let inputs: Vec<f64> = vec![1.0, 2.0, 0.5];
+    let outputs: Vec<f64> = vec![8.0, 15.0, 4.5];
+    let program = synthesize(inputs, outputs);
+    println!("      Test program(10.0) = {}", eval_ast(&program, 10.0));
 
-    tests.push(Test::new(
-        String::from("Synthesize f(X)=7*X+1 function"),
-        vec![1.0, 2.0, 0.5],
-        vec![8.0, 15.0, 4.5],
-        vec![10.0],
-    ));
+    println!("\nSynthesize f(X)=0.5*X+1 function");
+    let inputs: Vec<f64> = vec![2.0, 4.0, 8.0];
+    let outputs: Vec<f64> = vec![2.0, 3.0, 5.0];
+    let program = synthesize(inputs, outputs);
+    println!("      Test program(10.0) = {}", eval_ast(&program, 10.0));
 
-    tests.push(Test::new(
-        String::from("Synthesize f(X)=0.5*X+1 function"),
-        vec![2.0, 4.0, 8.0],
-        vec![2.0, 3.0, 5.0],
-        vec![10.0],
-    ));
-
-    tests.push(Test::new(
-        String::from("Synthesize f(X)=X**3 function"),
-        vec![2.0, 4.0, 5.0],
-        vec![8.0, 64.0, 125.0],
-        vec![3.0, 3.6, 13.1],
-    ));
-
-    for test in tests.iter() {
-        test.eval();
-    }
+    println!("\nSynthesize f(X)=X**3 function");
+    let inputs: Vec<f64> = vec![2.0, 4.0, 5.0];
+    let outputs: Vec<f64> = vec![8.0, 64.0, 125.0];
+    let program = synthesize(inputs, outputs);
+    println!("      Test program(3.0) = {}", eval_ast(&program, 3.0));
 }
