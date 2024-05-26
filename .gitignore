@@ -160,4 +160,5 @@ cython_debug/
 #.idea/
 target/
 Cargo.lock
-src/_lib.rs
+rust/synthesis/src/_lib.rs
+dist-newstyle/
