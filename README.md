@@ -127,3 +127,13 @@ equation = (Plus (Mult (Num 1) (Num 3)) (Mult (Plus (Num 2) (Num 3)) (Num 5)))
 ```
 
 Both examples are stored in *haskell/ast/* and *rust/ast/*
+
+
+## Update 24.06.2024
+
+I was a little bit busy with work stuff over the last month and I did not have much time to continue learning synthesis, but I decided to focus on Racket programming language (parent language to Rosette), because it feels super powerfull for synthesis and any kind of manipulations. The language is expressive and potent, everything seems kind of effortless.  
+So, I spent few days last month learning the basics and played a bit with Rosette, but realized that I need to start from the beginning, because symbolic synthesis is black-boxy to me when I tried to use it and I want to get to the bottom of it.  
+So, last week I tried to write a synthesis program for words based on grammar structure (I chose some of Chomsky's ideas, because it's accessible and simple), but then I realized that although I can write the grammar, I don't really know how to generate sentences out of it. So, again I need to move back one more time. This weekend I dedicated myself to rewriting the same program from Armando's lectures, this time in Racket - to learn a bit of Racket and also to challenge myself, and also to cristalize my understanding of basic blocks of synthesis. I want to go through all methods - there doesn't seem to be as much information as you have about NNs for example. Bottom-up search is one that was popular few years ago, a lot changed, but I think it's important to understand it and also it's great because it's simple, so you can apply it to simple problems.  
+
+I'm adding this implementation under [bottom-up-explicit-search.rkt](racket/bottom-up-explicit-search.rkt). It's not exactly the same as Rust - I did not include *Half*, because it adds a lot of search complexity.  
+
