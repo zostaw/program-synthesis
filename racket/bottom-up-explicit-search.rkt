@@ -10,11 +10,17 @@
 (struct Inc (x) #:transparent)
 (struct Dec (x) #:transparent)
 
-
+;; Terminals evaluate directly to value, non-terminals are dependent on other expressions
 (define terminals (list Num Zero))
 (define non-terminals (list Add Mul Inc Dec))
 
-;; Evaluation function
+;; *eval*
+;; Evaluation rules
+;; Arguments:
+;;     expr - expression to evaluate, should be composed from *grammar*
+;;     n - input value for the expression/unknown
+;;         you can think of expression as f(x), then n:=x
+;;
 (define (eval expr n)
   (cond
     [(procedure? expr) (eval (expr) n)]
@@ -27,6 +33,7 @@
         [(Inc x) (add1 (eval x n))]
         [(Dec x) (sub1 (eval x n))])]))
 
+;; *grow*
 ;; Expand list of terminals by composing them from grammar tree.
 ;; I.e. if we have:
 ;;
@@ -44,6 +51,9 @@
 ;; And as a result the function will return list of programs that appends above to the input list.
 ;; So, essentially we end up with:
 ;;      plist = (list Num Zero (Add Num Zero) (Add Zero Num) (Inc Num) (Inc Zero))
+;;
+;; Arguments:
+;;       plist - list of intial terminals
 ;;
 (define (grow plist)
   (apply append
@@ -64,14 +74,22 @@
                    (map (λ (pl) (Dec pl)) plist)]))
               non-terminals)))
 
-;; This function removes programs that yield same results for given inputs.
+;; *elim-equivalents*
+;; Removes programs that yield same results for given inputs.
 ;; To be more precise, it executes all programs on same inputs
 ;; and then keeps only single program for each output.
 ;; I.e. if we have:
 ;;         plist = (list Num Zero (Add Num Num) (Mul Num Zero))
 ;; then it will remove (Mul Num Zero) because it's equivalent to Zero.
 ;;
-(define (elim-equivalents plist inputs seen)
+;; Arguments:
+;;    plist - list of initial terminals
+;;    inputs - training input data
+;;    seen - recursion feature,
+;;           it holds a list of programs that were already found in plist
+;;           keep it empty, unless you want to explicitely remove particular programs
+;;
+(define (elim-equivalents plist inputs [seen '()])
   (cond
     [(empty? plist) '()]
     [else
@@ -92,18 +110,32 @@
             (equal? (eval p input) output))
           inputs outputs))
 
-
-(define (synthesize inputs outputs
-                    #:max-depth [max-depth 2])
+;; *synthesize*
+;; Bottom-up explicit search for program
+;; that satisfies relationship *p(input) == output* for all inputs, outputs.
+;; The program search is based on grammar defined by:
+;;    - *terminals* list - initial terminals
+;;    - *non-terminals* list - composition rules
+;;    - *eval* rules
+;; The search is performed until program satisfies input-output relationship or depth limit reached.
+;; If none of the programs found in iteration satisfies input-output relationship,
+;;   then they are used *as* terminals in the next iteration.
+;;
+;; Arguments:
+;;       inputs - list of training inputs
+;;       outputs - list of training targets (must have same shape as inputs)
+;;       max-depth - (Optional), determines depth of search
+;;
+(define (synthesize inputs outputs #:max-depth [max-depth 2])
   (define plist terminals)
   (call/cc
    (lambda (return)
-  (for ([current-depth (in-range max-depth)])
-    (set! plist (grow plist))
-    (set! plist (elim-equivalents plist inputs '()))
-    (for ([p plist])
-      (when (is-correct p inputs outputs)
-          (return p)))))))
+     (for ([current-depth (in-range max-depth)])
+       (set! plist (grow plist))
+       (set! plist (elim-equivalents plist inputs))
+       (for ([p plist])
+         (when (is-correct p inputs outputs)
+           (return p)))))))
 
 
 (display "\nSynthesize f(X)=X function: f(10)=")
