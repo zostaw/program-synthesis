@@ -17,7 +17,7 @@
    Arguments:
        expr - expression to evaluate, should be composed from *grammar*
        n - input value for the expression/unknown
-        you can think of expression as f(x), then n:=x
+           you can think of expression as f(x), then n:=x
   |#
   (cond
     [(procedure? expr) (eval (expr) n)]
@@ -45,9 +45,9 @@
      then they are used *as* terminals in the next iteration.
    
    Arguments:
-         inputs - list of training inputs
-         outputs - list of training targets (must have same shape as inputs)
-      max-depth - (Optional), determines depth of search
+       inputs - list of training inputs
+       outputs - list of training targets (must have same shape as inputs)
+       max-depth - (Optional), determines depth of search
   |#
   (define plist terminals)
   (call/cc
@@ -82,10 +82,11 @@
    
    And as a result the function will return list of programs that appends above to the input list.
    So, essentially we end up with:
+        
         plist = (list Num Zero (Add Num Zero) (Add Zero Num) (Inc Num) (Inc Zero))
    
    Arguments:
-      plist - list of intial terminals
+       plist - list of intial terminals
   |#
   (apply append
          plist
@@ -112,7 +113,9 @@
    To be more precise, it executes all programs on same inputs
    and then keeps only single program for each output.
    I.e. if we have:
+           
            plist = (list Num Zero (Add Num Num) (Mul Num Zero))
+   
    then it will remove (Mul Num Zero) because it's equivalent to Zero.
    
    Arguments:
@@ -135,7 +138,6 @@
                 rest-p
                 inputs
                 (cons result seen))))]))
-
 
 (define (is-correct p inputs outputs)
   (andmap (λ (input output)
@@ -163,10 +165,10 @@
 (set! test-outputs (list 8 15 4.5))
 (eval (synthesize test-inputs test-outputs #:max-depth 6) 10)
 
-(display "\nSynthesize f(X)=X**3 function: f(3)=")
+(display "\nSynthesize f(X)=X**3 function: f(10)=")
 (set! test-inputs (list 2 4 5))
 (set! test-outputs (list 8 64 125))
-(eval (synthesize test-inputs test-outputs #:max-depth 6) 3)
+(eval (synthesize test-inputs test-outputs #:max-depth 6) 10)
 
 
 
