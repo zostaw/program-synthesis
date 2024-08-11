@@ -27,7 +27,7 @@
     (define expr (Mul (Add Var Zero) 13))
     (displayln expr)
 
-    (set! var 5) ; evaluate for var=5
+    (set! var 10) ; evaluate for var=10
     (evaluate expr)
 
   |#
@@ -86,23 +86,4 @@
                   [x x])]))
            (provide grammar-name)))]))
 
-
-
-(define zero 0)
-(define var 5)
-
-(define-grammar evaluate
-  (terminals
-   [Var var]
-   [Zero zero])
-  (non-terminals
-   [Add (left right) (+ (evaluate left) (evaluate right))]
-   [Mul (left right) (* (evaluate left) (evaluate right))]))
-   
-
-(define expr (Mul (Add Var Zero) 13))
-(displayln expr)
-
-(set! var 10)
-(evaluate expr)
 
