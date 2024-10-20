@@ -137,3 +137,7 @@ So, last week I tried to write a synthesis program for words based on grammar st
 
 I'm adding this implementation under [bottom-up-explicit-search.rkt](racket/bottom-up-explicit-search.rkt). It's not exactly the same as Rust - I did not include *Half*, because it adds a lot of search complexity.  
 
+
+## Update 20.10.2024
+
+I was doing a lot of racket stuff in another repository to learn FFI usage, because I feel like FFI is a necessity in Program Synthesis. So, I was mostly working on [llama-cpp-racket](https://github.com/zostaw/llama-cpp-racket) to enable myself to interface language models in Racket - tokenizers and even full inference. I learned a ton, but abandoned PS for some time. Then over some time now I've been learning RL stuff which I was planning to learn about even before. I started it before, but I just didn't understand the basic intuitions. After reading the PS lectures I saw MCMC explained to be really well and something clicked, so I went back to [The Bible](https://www.goodreads.com/book/show/39813875-reinforcement-learning) and have been working on this [project](https://github.com/zostaw/circle-expansion). Soo, that's about it, after I finish with it, I'm going to go back to PS. For now, I'm just leaving this important [Blog](https://blog.sigplan.org/2019/11/26/building-your-first-program-synthesizer/) for future reference.

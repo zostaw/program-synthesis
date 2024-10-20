@@ -163,3 +163,4 @@ Cargo.lock
 rust/synthesis/src/_lib.rs
 dist-newstyle/
 racket/compiled/
+racket/rosette-first-synthesizer-blog.rkt
