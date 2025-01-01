@@ -88,7 +88,7 @@
    Arguments:
        plist - list of intial terminals
   |#
-  (apply append
+  (foldl append
          plist
          (map (λ (nt)
                 (cond
