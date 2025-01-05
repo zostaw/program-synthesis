@@ -26,8 +26,6 @@
 
 
   This implementation is not super efficient, it's mostly for learning purposes. I know for sure that it could be optimized at least within the range of one order, because I sometimes search multiple times for something that I could technically do in one run.
-
-  In fact, depth 6 is unreachable basically. No wonder we only remove dupliactes at this point. But I wanna actually add type checking.
   |#
 
 
