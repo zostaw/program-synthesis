@@ -151,3 +151,10 @@ I have been recently trying to grasp [top-down synthesis](./racket/WIP-top-down.
   - list of arguments
 
 Now, the search works, but I didn't implement type checking, so one can imagine it's super inefficient. The only way I limit number of programs is by removing duplicates. But after depth of 5 search it's basically too many programs, and it will take days to generate new program. Yes, so next step is probably defining type checking. I'll probably have to change the **Expr** definition.
+
+## Update 15.12.2025
+
+Started vacations and finally have some time to come back to Program Synthesis.  
+I added some simple exercises that help me better follow the materials.  
+Since I struggle to execute *Sketch* programs on my computer arch, I [implemented](./racket/intro_to_ps_a_s_lezama_7_legen.rkt) one of the examples in Rosette. I also didn't fully understand a detail about implementation of value encoding in **Sketch** as described in [Lecture 7 - the part about One-Hot encoding](https://people.csail.mit.edu/asolar/SynthesisCourse/Lecture7.htm),so to better understand it I implemented [simple constraint system according to notes in python](./primitive_constraint_system.ipynb).  
+
